@@ -1,4 +1,6 @@
-export default function Results () {
+import { AppState } from "../app";
+
+export default function Results ({appState}: {appState: AppState}) {
 
 	return (
 		<>
