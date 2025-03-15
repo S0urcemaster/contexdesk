@@ -1,34 +1,39 @@
 'use client'
 import React, { ReactElement, useEffect, useState } from 'react';
-import Mask from './view/mask';
+import System from './view/mask';
 import Results from './view/results';
 import Requests from './view/requests';
 import MenuHead from './view/menuHead';
 import MaskList from './view/maskList';
+import Mask from './view/mask';
 
-type MaskData = string
-
-type Mask = {
+export type System = {
 	name: string
-	data: MaskData
-	form: ReactElement
+	description: string
+	definition: string
+}
+
+export type Request = {
+	system: System
+	currentRequest: number
+	requests: string[]
 }
 
 export type AppState = {
-	currentMask: Mask
-	maskList: Mask[]
+	currentSystem: number
+	systemList: System[]
 }
 
 export default function App() {
-	const [text, setText] = useState('')
 	const translateForm = () => {
+		const [text, setText] = useState('')
 		return <>
 			<h2>Translate</h2>
 			<input type='text' value={text} onChange={event => setText(event.target.value)} />
 		</>
 	}
-	
-	const defaultForm = ({valueChanged}:{valueChanged: (value: string) => void}) => {
+
+	const defaultForm = ({ valueChanged }: { valueChanged: (value: string) => void }) => {
 		const [text, setText] = useState('')
 		useEffect(() => {
 			valueChanged(text)
@@ -42,38 +47,46 @@ export default function App() {
 		</>
 	}
 
-	const [state, setState] = useState(
-		{
-			currentMask: {
+	const appState: AppState = {
+		currentSystem: 0,
+		systemList: [
+			{
 				name: 'default',
-				data: '',
-				form: translateForm()
-			},
-			maskList: [
-				{
-					name: 'translate',
-					data: '',
-					form: defaultForm({valueChanged: (value: string) => {}})
-				},
-				{
-					name: 'paint',
-					data: '',
-					form: <></>
-				},
-				{
-					name: 'default',
-					data: '',
-					form: defaultForm({valueChanged: (value: string) => {}})
-				},
-			]
-		} as AppState)
+				description: 'default',
+				definition: 'default'
+			}]
+	}
+
+	const [state, setState] = useState(appState)
+
+	const [name, setName] = useState('default')
+	const [description, setDescription] = useState('')
+	const [definition, setDefinition] = useState('default')
+	const [request, setRequest] = useState('')
+
+	const events = {
+		nameChanged: (value: string) => {
+			setName(value)
+			state.systemList[state.currentSystem].name = value
+			setState({...state})
+		},
+		descriptionChanged: (value: string) => {
+			setDescription(value)
+		},
+		definitionChanged: (value: string) => {
+			setDefinition(value)
+		},
+		requestChanged: (value: string) => {
+			setRequest(value)
+		}
+	}
 
 	return (
 		<>
 			<div className='column'>
-				<div className='column' style={{ height: '50%' }}>
-					<MenuHead appState={state} />
-					<Mask appState={state} />
+				<div className='column' style={{ height: '50%', padding: '5px' }}>
+					<MenuHead appState={state} showConfig={() => setName('config')} />
+					<Mask appState={state} appEvents={events} />
 				</div>
 				<div className='row' style={{ height: '50%' }}>
 					<MaskList appState={state} />
@@ -82,7 +95,7 @@ export default function App() {
 			<div className='column'>
 				<div className='row' style={{ height: '50%' }}>
 					<Results appState={state} />
-					{defaultForm({valueChanged: (value: string) => {}})}
+					{defaultForm({ valueChanged: (value: string) => { } })}
 				</div>
 				<div className='row' style={{ height: '50%' }}>
 					<Requests appState={state} />

@@ -1,9 +1,10 @@
 import { AppState } from "../app";
 
-export default function MenuHead({appState}: {appState: AppState}) {
+export default function MenuHead({appState, showConfig}: {appState: AppState, showConfig: () => void}) {
 	return (
-		<>
-			<h1>Menuhead</h1>
-		</>
+		<div style={{display: 'flex', justifyContent: 'space-between', height: '25'}}>
+			<h1 style={{}}>Contex Desk</h1>
+			<button onClick={showConfig}>Menu</button>
+		</div>
 	)
 }

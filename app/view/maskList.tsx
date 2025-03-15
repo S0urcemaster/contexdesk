@@ -1,11 +1,11 @@
-import { AppState } from "../app";
+import { AppState } from "../app"
 
 export default function MaskList ({appState}: {appState: AppState}) {
 	return (
 		<div>
-		{appState.maskList.map((mask, index) => (
+		{appState.systemList.map((system, index) => (
 			<div key={index}>
-				{mask.form}
+				{system.name}
 			</div>
 		))}
 		</div>
