@@ -1,9 +1,9 @@
-import { AppState } from "../app"
+import { App } from "../model";
 
-export default function MaskList ({appState}: {appState: AppState}) {
+export default function MaskList ({appState}: {appState: App}) {
 	return (
 		<div>
-		{appState.systemList.map((system, index) => (
+		{appState.systems.map((system, index) => (
 			<div key={index}>
 				{system.name}
 			</div>

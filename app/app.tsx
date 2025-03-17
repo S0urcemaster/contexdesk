@@ -1,28 +1,12 @@
 'use client'
-import React, { ReactElement, useEffect, useState } from 'react';
-import System from './view/mask';
+import React, { CSSProperties, ReactElement, useEffect, useState } from 'react';
 import Results from './view/results';
 import Requests from './view/requests';
 import MenuHead from './view/menuHead';
 import MaskList from './view/maskList';
 import Mask from './view/mask';
-
-export type System = {
-	name: string
-	description: string
-	definition: string
-}
-
-export type Request = {
-	system: System
-	currentRequest: number
-	requests: string[]
-}
-
-export type AppState = {
-	currentSystem: number
-	systemList: System[]
-}
+import { emptyModel } from './model';
+import ModelHead from './view/modelHead';
 
 export default function App() {
 	const translateForm = () => {
@@ -47,17 +31,7 @@ export default function App() {
 		</>
 	}
 
-	const appState: AppState = {
-		currentSystem: 0,
-		systemList: [
-			{
-				name: 'default',
-				description: 'default',
-				definition: 'default'
-			}]
-	}
-
-	const [state, setState] = useState(appState)
+	const [state, setState] = useState(emptyModel)
 
 	const [name, setName] = useState('default')
 	const [description, setDescription] = useState('')
@@ -67,8 +41,8 @@ export default function App() {
 	const events = {
 		nameChanged: (value: string) => {
 			setName(value)
-			state.systemList[state.currentSystem].name = value
-			setState({...state})
+			state.systems[state.currentSystem].name = value
+			setState({ ...state })
 		},
 		descriptionChanged: (value: string) => {
 			setDescription(value)
@@ -81,23 +55,39 @@ export default function App() {
 		}
 	}
 
+	const columnStyle: CSSProperties = {
+		flex: 1,
+		display: 'flex',
+		flexDirection: 'column'
+	}
+
+	const rowStyle: CSSProperties = {
+		flex: 1,
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		border: '1px solid #ccc',
+		overflow: 'auto',
+		minHeight: 50
+	}
+
 	return (
 		<>
-			<div className='column'>
-				<div className='column' style={{ height: '50%', padding: '5px' }}>
-					<MenuHead appState={state} showConfig={() => setName('config')} />
+			<div style={{display: 'grid', gridTemplateRows: '3fr 1fr'}}>
+				<div style={{display: 'grid', gridTemplateRows: '1fr 0fr', padding: 5, backgroundColor: '#25597C'}}>
 					<Mask appState={state} appEvents={events} />
+					<MenuHead appState={state} showConfig={() => setName('config')} />
 				</div>
-				<div className='row' style={{ height: '50%' }}>
+				<div style={{marginTop: 1, backgroundColor: '#25597C'}}>
 					<MaskList appState={state} />
 				</div>
 			</div>
-			<div className='column'>
-				<div className='row' style={{ height: '50%' }}>
-					<Results appState={state} />
-					{defaultForm({ valueChanged: (value: string) => { } })}
+			<div style={{display: 'grid', gridTemplateRows: '3fr 1fr', paddingLeft: 1}}>
+				<div style={{display: 'grid', gridTemplateRows: '1fr 0fr', padding: 5, backgroundColor: '#25597C'}}>
+					<Results appState={state} appEvents={events} />
+					<ModelHead appState={state} showConfig={() => setName('config')} />
 				</div>
-				<div className='row' style={{ height: '50%' }}>
+				<div style={{display: 'grid', gridTemplateRows: '0fr 1fr', padding: 5, backgroundColor: '#25597C', marginTop: 1}}>
 					<Requests appState={state} />
 				</div>
 			</div>

@@ -1,14 +1,12 @@
-import { AppState } from "../app";
+import { App } from "../model";
 
-export default function Results ({appState}: {appState: AppState}) {
+
+export default function Results({ appState, appEvents }: { appState: App, appEvents: any }) {
 
 	return (
-		<>
-			<h1>Results</h1>
-			<section>
-				<h2></h2>
-				<p></p>
-			</section>
-		</>
+		<div style={{ display: 'flex', flexDirection: 'column', paddingTop: 1 }}>
+			<input type='text' value={appState.systems[appState.currentSystem].name} onChange={(e) => appEvents.nameChanged(e.target.value)} placeholder="request" />
+			<textarea value={appState.systems[appState.currentSystem].definition} onChange={(e) => appEvents.definitionChanged(e.target.value)} rows={4} cols={50} placeholder={'response'} style={{ height: '100%', resize: 'none' }} />
+		</div>
 	)
 }
